@@ -22,4 +22,6 @@ public interface BookService {
 
     Mono<String> returnBook(String id);
 
+    Flux<Book> findBooksCategory(String category);
+
 }

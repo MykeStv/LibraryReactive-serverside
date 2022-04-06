@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/book")
 public class BookController {
@@ -56,6 +58,18 @@ public class BookController {
     private Mono<String> returnBook(@PathVariable("id") String id) {
         return this.bookService.returnBook(id);
 
+    }
+
+    @GetMapping(path = "/search")
+    private Mono<ResponseEntity<Book>> findBookName(@RequestParam("name") String name) {
+        return this.bookService.findBookName(name)
+                .flatMap(b -> Mono.just(ResponseEntity.ok(b)))
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    }
+
+    @GetMapping(path = "/category/{category}")
+    private Flux<Book> categoryRecommendations(@PathVariable("category") String category) {
+        return this.bookService.findBooksCategory(category);
     }
 
 }

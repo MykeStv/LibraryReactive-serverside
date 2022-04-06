@@ -83,4 +83,9 @@ public class BookServiceImpl implements BookService {
                     }
                 });
     }
+
+    @Override
+    public Flux<Book> findBooksCategory(String category) {
+        return this.bookRepository.findByCategory(category);
+    }
 }

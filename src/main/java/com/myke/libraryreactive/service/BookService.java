@@ -16,5 +16,10 @@ public interface BookService {
 
     Mono<Book> deleteBook(String id);
 
+    Mono<Book> findBookName(String name);
+
+    Mono<String> borrowBook(String id);
+
+    Mono<String> returnBook(String id);
 
 }

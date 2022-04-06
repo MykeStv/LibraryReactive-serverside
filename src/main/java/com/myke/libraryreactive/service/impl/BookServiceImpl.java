@@ -4,9 +4,12 @@ import com.myke.libraryreactive.model.Book;
 import com.myke.libraryreactive.repository.BookRepository;
 import com.myke.libraryreactive.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDate;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -43,5 +46,41 @@ public class BookServiceImpl implements BookService {
     public Mono<Book> deleteBook(String id) {
         return this.bookRepository.findById(id)
                 .flatMap(b -> this.bookRepository.deleteById(id).thenReturn(b));
+    }
+
+    @Override
+    public Mono<Book> findBookName(String name) {
+        return this.bookRepository.findByName(name).switchIfEmpty(Mono.empty());
+    }
+
+    @Override
+    public Mono<String> borrowBook(String id) {
+
+        return this.bookRepository.findById(id)
+                .flatMap(book -> {
+                    if (!book.getBorrowed()) {
+                        book.setBorrowed(true);
+                        book.setDateBorrewed(LocalDate.now());
+                        return saveBook(book).flatMap(book1 -> Mono.just("Libro prestado!"));
+                    } else {
+                        return Mono.just("No se puede prestar, el libro fue prestado el dia: " +
+                                book.getDateBorrewed());
+                    }
+                });
+
+    }
+
+    @Override
+    public Mono<String> returnBook(String id) {
+        return this.bookRepository.findById(id)
+                .flatMap(book -> {
+                    if (book.getBorrowed()) {
+                        book.setBorrowed(false);
+                        book.setDateBorrewed(null);
+                        return saveBook(book).flatMap(book1 -> Mono.just("Libro Devuelto!"));
+                    } else {
+                        return Mono.just("No se puede devolver, el libro no esta prestado");
+                    }
+                });
     }
 }

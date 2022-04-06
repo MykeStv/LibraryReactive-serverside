@@ -46,5 +46,16 @@ public class BookController {
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
+    @PutMapping(path = "/{id}/borrow")
+    private Mono<String> borrowBook(@PathVariable("id") String id) {
+        return this.bookService.borrowBook(id);
+
+    }
+
+    @PutMapping(path = "/{id}/return")
+    private Mono<String> returnBook(@PathVariable("id") String id) {
+        return this.bookService.returnBook(id);
+
+    }
 
 }

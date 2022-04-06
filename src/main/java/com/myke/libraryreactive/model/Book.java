@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Document(collection = "books")
+@Document(collection = "booksR")
 public class Book {
 
     // ATTRIBUTES
